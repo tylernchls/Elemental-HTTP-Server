@@ -5,66 +5,63 @@ const PORT = 3000;
 
 
 const server = http.createServer((req, res) => {
-  let pageFound = false;
-  let url = req.url.substr(1);
+
+  let url = req.url;
   console.log(url);
 
-  let listArr = fs.readdir('./public', (err, filesInDir) => {
-    if (err) throw err;
+  if(url === '/' || url === '/index.html') {
+    fs.readFile('./public/index.html', (err, fileContent) => {
 
-    filesInDir.forEach((file) => {
-      console.log(url, file);
+      if (err) throw err;
 
-      if(url === file) {
-        console.log('first if');
-        pageFound = true;
-        fs.readFile(`./public/${url}`, (err, file) => {
-          console.log('test two');
+      res.writeHead(200, {'Content-Type': 'text/html', 'Content-Length': `${fileContent.length}`});
+      res.write(fileContent);
+      res.end();
 
-          if (err) throw err;
-
-          res.writeHead(200, {'Content-Type': 'text/html', 'Content-Length': `${file.length}`});
-          res.write(file);
-          res.end();
-        });
-
-      } else if(url.endsWith('.css')) {
-        console.log('in css');
-        pageFound = true;
-        fs.readFile(`./public/${url}`, (err, file) =>{
-          file = file.toString();
-          if (err) throw err;
-
-          res.writeHead(200, {'Content-Type': 'text/css', 'Content-Length': `${file.length}`});
-          // res.write(file);
-          res.end(file);
-        });
-      }
     });
+  } else if(url === '/helium.html') {
+    fs.readFile('./public/helium.html', (err, fileContent) => {
 
-    console.log('never');
+      if (err) throw err;
 
-    if(pageFound === false) {
+    res.writeHead(200, {'Content-Type': 'text/html', 'Content-Length': `${fileContent.length}`});
+    res.write(fileContent);
+    res.end();
 
-      fs.readFile(`./public/404.html`, (err, file) => {
-        if (err) throw err;
+    });
+  } else if(url === '/hydrogen.html') {
+    fs.readFile('./public/hydrogen.html', (err, fileContent) => {
 
-        res.writeHead(404, {'Content-Type': 'text/html', 'Content-Length': `${file.length}`});
-        res.write(file);
-      });
-    }
+      if (err) throw err;
 
-  });
+    res.writeHead(200, {'Content-Type': 'text/html', 'Content-Length': `${fileContent.length}`});
+    res.write(fileContent);
+    res.end();
 
+    });
+  } else if(url === '/css/styles.css') {
 
+    fs.readFile('./public/css/styles.css', (err, fileContent) => {
 
+      if (err) throw err;
 
+    res.writeHead(200, {'Content-Type': 'text/css', 'Content-Length': `${fileContent.length}`});
+    res.write(fileContent);
+    res.end();
 
+    });
+  } else {
 
+    fs.readFile('./public/404.html', (err, fileContent) => {
 
+      if (err) throw err;
 
+    res.writeHead(404, {'Content-Type': 'text/html', 'Content-Length': `${fileContent.length}`});
+    res.write(fileContent);
+    res.end();
 
-
+    });
+  }
 
 
 
@@ -109,14 +106,33 @@ const server = http.createServer((req, res) => {
 
 
 
-
-
-
-
-
-
-
-
 server.listen(PORT, () => {
   console.log('opened server on', server.address());
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
