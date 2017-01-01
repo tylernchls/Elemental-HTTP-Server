@@ -9,59 +9,28 @@ const server = http.createServer((req, res) => {
   let url = req.url;
   console.log(url);
 
-  if(url === '/' || url === '/index.html') {
-    fs.readFile('./public/index.html', (err, fileContent) => {
 
-      if (err) throw err;
+    fs.readFile(`./public/${url}`, (err, fileContent) => {
 
-      res.writeHead(200, {'Content-Type': 'text/html', 'Content-Length': `${fileContent.length}`});
-      res.write(fileContent);
-      res.end();
+      if (err) {
 
-    });
-  } else if(url === '/helium.html') {
-    fs.readFile('./public/helium.html', (err, fileContent) => {
+        fs.readFile('./public/404.html', (err, fileContent) => {
 
-      if (err) throw err;
+          res.writeHead(404, {'Content-Type': 'text/html', 'Content-Length': `${fileContent.length}`});
+          res.write(fileContent);
+          res.end();
 
-    res.writeHead(200, {'Content-Type': 'text/html', 'Content-Length': `${fileContent.length}`});
-    res.write(fileContent);
-    res.end();
+        });
 
-    });
-  } else if(url === '/hydrogen.html') {
-    fs.readFile('./public/hydrogen.html', (err, fileContent) => {
+      } else {
+        res.writeHead(200, {'Content-Type': 'text/html ', 'Content-Length': `${fileContent.length}`});
+        res.write(fileContent);
+        res.end();
 
-      if (err) throw err;
-
-    res.writeHead(200, {'Content-Type': 'text/html', 'Content-Length': `${fileContent.length}`});
-    res.write(fileContent);
-    res.end();
+      }
 
     });
-  } else if(url === '/css/styles.css') {
 
-    fs.readFile('./public/css/styles.css', (err, fileContent) => {
-
-      if (err) throw err;
-
-    res.writeHead(200, {'Content-Type': 'text/css', 'Content-Length': `${fileContent.length}`});
-    res.write(fileContent);
-    res.end();
-
-    });
-  } else {
-
-    fs.readFile('./public/404.html', (err, fileContent) => {
-
-      if (err) throw err;
-
-    res.writeHead(404, {'Content-Type': 'text/html', 'Content-Length': `${fileContent.length}`});
-    res.write(fileContent);
-    res.end();
-
-    });
-  }
 
 
 
@@ -70,7 +39,6 @@ const server = http.createServer((req, res) => {
     req.on('data', (data) => {
       var dataPost = querystring.parse(data.toString());
       console.log(dataPost);
-
       var fileContents = `<!DOCTYPE html>
 <html lang="en">
 <head>
