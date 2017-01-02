@@ -23,7 +23,18 @@ const server = http.createServer((req, res) => {
 
 
     fs.readFile(`./public/${url}`, (err, files) => {
-      if(err) {
+      if (url === '/') {
+
+          fs.readFile('./public/index.html', (err, fileContent) => {
+            console.log('testing');
+
+            res.writeHead(200, {'Content-Type': `text/${fileType}`, 'Content-Length': `${fileContent.length}`});
+            res.write(fileContent);
+            res.end();
+
+          });
+          // will throw error if page isn't found
+      } else if(err) {
         console.log('this file doesnt exist');
 
 
