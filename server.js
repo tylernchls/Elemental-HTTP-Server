@@ -62,7 +62,7 @@ const server = http.createServer((req, res) => {
         fs.writeFile(`./public/${dataPost.elementName}.html`, fileContents, (err) => {
           if (err) throw err;
           res.writeHead(200, {'Content-Type' : 'application/json'});
-          res.end({'success': 'true'});
+          res.end();
         });
 
 
