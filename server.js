@@ -33,7 +33,7 @@ const server = http.createServer((req, res) => {
 
     });
   }
-
+    // writes file if doesnt exist
   const writeNewFile = () => {
 
         req.on('data', (data) => {
@@ -62,6 +62,7 @@ const server = http.createServer((req, res) => {
         fs.writeFile(`./public/${dataPost.elementName}.html`, fileContents, (err) => {
           if (err) throw err;
           res.writeHead(200, {'Content-Type' : 'application/json'});
+          res.write(`{"sucess" : true}`);
           res.end();
         });
 
@@ -87,7 +88,7 @@ const server = http.createServer((req, res) => {
         writeNewFile()
 
 
-
+        // will read file if exists
       } else {
 
         fs.readFile(`./public/${url}`, (err, fileContent) => {
