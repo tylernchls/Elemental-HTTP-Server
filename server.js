@@ -10,8 +10,8 @@ const server = http.createServer((req, res) => {
   let url = req.url;
   let findFileType = url.split('').splice(-3,3).join('');
 
-  // finds fileType ending and sets it
 
+  // finds fileType ending and sets it
   const checkFileType = () => {
     if(findFileType === 'css') {
       fileType = 'css';
@@ -22,6 +22,7 @@ const server = http.createServer((req, res) => {
     }
   }
 
+    // checks for '/' and brings to index.html
   const checkForwardSlash = () => {
     fs.readFile('./public/index.html', (err, fileContent) => {
       console.log('testing');
@@ -33,21 +34,7 @@ const server = http.createServer((req, res) => {
     });
   }
 
-
-    /*
-    checks if url passed in exits or not, if does exist will read file and send data out.
-    if file doens't exist will create the file
-    */
-
-
-    fs.readFile(`./public/${url}`, (err, files) => {
-      if (url === '/') {
-        checkForwardSlash();
-
-          // will throw error if page isn't found
-      } else if(err) {
-        console.log('this file doesnt exist');
-
+  const writeNewFile = () => {
 
         req.on('data', (data) => {
 
@@ -80,6 +67,26 @@ const server = http.createServer((req, res) => {
 
 
         });
+  }
+
+
+    /*
+    checks if url passed in exits or not, if does exist will read file and send data out.
+    if file doens't exist will create the file
+    */
+
+
+    fs.readFile(`./public/${url}`, (err, files) => {
+      if (url === '/') {
+
+        checkForwardSlash();
+
+       // will write page if not found
+      } else if(req.method === 'POST') {
+        console.log('this file doesnt exist');
+        writeNewFile()
+
+
 
       } else {
 
