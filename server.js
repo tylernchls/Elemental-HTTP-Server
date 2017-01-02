@@ -2,19 +2,37 @@ const http = require('http');
 const fs = require('fs');
 const querystring = require('querystring');
 const PORT = 3000;
-let fileType;
+
 
 
 const server = http.createServer((req, res) => {
+
   let url = req.url;
   let findFileType = url.split('').splice(-3,3).join('');
 
   // finds fileType ending and sets it
-  if(findFileType === 'css') {
-    fileType = 'css';
-  } else {
-    fileType = 'html';
+
+  const checkFileType = () => {
+    if(findFileType === 'css') {
+      fileType = 'css';
+      return fileType;
+    } else {
+      fileType = 'html';
+      return fileType;
+    }
   }
+
+  const checkForwardSlash = () => {
+    fs.readFile('./public/index.html', (err, fileContent) => {
+      console.log('testing');
+
+      res.writeHead(200, {'Content-Type': 'text/html', 'Content-Length': `${fileContent.length}`});
+      res.write(fileContent);
+      res.end();
+
+    });
+  }
+
 
     /*
     checks if url passed in exits or not, if does exist will read file and send data out.
@@ -24,15 +42,8 @@ const server = http.createServer((req, res) => {
 
     fs.readFile(`./public/${url}`, (err, files) => {
       if (url === '/') {
+        checkForwardSlash();
 
-          fs.readFile('./public/index.html', (err, fileContent) => {
-            console.log('testing');
-
-            res.writeHead(200, {'Content-Type': `text/${fileType}`, 'Content-Length': `${fileContent.length}`});
-            res.write(fileContent);
-            res.end();
-
-          });
           // will throw error if page isn't found
       } else if(err) {
         console.log('this file doesnt exist');
@@ -76,20 +87,14 @@ const server = http.createServer((req, res) => {
           // takes back to index.html page
           if (url === '/') {
 
-            fs.readFile('./public/index.html', (err, fileContent) => {
-              console.log('testing');
+            checkForwardSlash();
 
-              res.writeHead(200, {'Content-Type': `text/${fileType}`, 'Content-Length': `${fileContent.length}`});
-              res.write(fileContent);
-              res.end();
-
-            });
             // will throw error if page isn't found
           } else if(err) {
 
             fs.readFile('./public/404.html', (err, fileContent) => {
 
-              res.writeHead(404, {'Content-Type': `text/${fileType}`, 'Content-Length': `${fileContent.length}`});
+              res.writeHead(404, {'Content-Type': `text/html`, 'Content-Length': `${fileContent.length}`});
               res.write(fileContent);
               res.end();
 
@@ -97,7 +102,7 @@ const server = http.createServer((req, res) => {
             // writes file if found
           } else {
 
-             res.writeHead(200, {'Content-Type': `text/${fileType}`, 'Content-Length': `${fileContent.length}`});
+             res.writeHead(200, {'Content-Type': `text/${checkFileType()}`, 'Content-Length': `${fileContent.length}`});
              res.write(fileContent);
              res.end();
 
