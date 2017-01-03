@@ -6,83 +6,74 @@ const PORT = 3000;
 
 
 // -------------------------------------function area------------------------------------------
-  // finds fileType ending and sets it
-  const checkFileType = () => {
-    if(findFileType === 'css') {
-      fileType = 'css';
-      return fileType;
-    } else {
-      fileType = 'html';
-      return fileType;
-    }
+// finds fileType ending and sets it
+const checkFileType = () => {
+  if(findFileType === 'css') {
+    fileType = 'css';
+    return fileType;
+  } else {
+    fileType = 'html';
+    return fileType;
   }
+}
 
-    // checks for '/' and brings to index.html
-  const checkForwardSlash = () => {
-    fs.readFile('./public/index.html', (err, fileContent) => {
-      console.log('testing');
+// checks for '/' and brings to index.html
+const checkForwardSlash = () => {
+  fs.readFile('./public/index.html', (err, fileContent) => {
+    res.writeHead(200, {'Content-Type': 'text/html', 'Content-Length': `${fileContent.length}`});
+    res.write(fileContent);
+    res.end();
 
-      res.writeHead(200, {'Content-Type': 'text/html', 'Content-Length': `${fileContent.length}`});
-      res.write(fileContent);
+  });
+}
+
+// writes file if doesnt exist
+const writeNewFile = () => {
+
+  req.on('data', (data) => {
+    var dataPost = querystring.parse(data.toString());
+    var fileContents = `<!DOCTYPE html>
+  <html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <title>The Elements - ${dataPost.elementName}</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link href = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/BristolStoolChart.png/1024px-BristolStoolChart.png">
+  </head>
+  <body>
+  <h1>${dataPost.elementName}</h1>
+  <h2>${dataPost.elementSymbol}</h2>
+  <h3>${dataPost.elementAtomicNumber}</h3>
+  <p>${dataPost.elementDescription}</p>
+  <p><a href="/">back</a></p>
+  </body>
+  </html>`
+
+
+    fs.writeFile(`./public/${dataPost.elementName}.html`, fileContents, (err) => {
+      if (err) throw err;
+      res.writeHead(200, {'Content-Type' : 'application/json'});
+      res.write(`{"sucess" : true}`);
       res.end();
-
     });
-  }
-    // writes file if doesnt exist
-  const writeNewFile = () => {
 
-        req.on('data', (data) => {
+  });
+}
 
-          var dataPost = querystring.parse(data.toString());
-          console.log(dataPost);
-
-          var fileContents = `<!DOCTYPE html>
-    <html lang="en">
-    <head>
-    <meta charset="UTF-8">
-    <title>The Elements - ${dataPost.elementName}</title>
-    <link rel="stylesheet" href="/css/styles.css">
-    <link href = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/BristolStoolChart.png/1024px-BristolStoolChart.png">
-    </head>
-    <body>
-    <h1>${dataPost.elementName}</h1>
-    <h2>${dataPost.elementSymbol}</h2>
-    <h3>${dataPost.elementAtomicNumber}</h3>
-    <p>${dataPost.elementDescription}</p>
-    <p><a href="/">back</a></p>
-    </body>
-    </html>`
-
-
-        fs.writeFile(`./public/${dataPost.elementName}.html`, fileContents, (err) => {
-          if (err) throw err;
-          res.writeHead(200, {'Content-Type' : 'application/json'});
-          res.write(`{"sucess" : true}`);
-          res.end();
-        });
-
-
-        });
-  }
 
 // ------------------------------------end functions-----------------------------------------
 
 
 const server = http.createServer((req, res) => {
-
   let url = req.url;
   let findFileType = url.split('').splice(-3,3).join('');
 
 
-
-
-    /*
-    checks if url passed in exits or not, if does exist will read file and send data out.
-    if file doens't exist will create the file
-    */
-
-
-    fs.readFile(`./public/${url}`, (err, files) => {
+  /*
+  checks if url passed in exits or not, if does exist will read file and send data out.
+  if file doens't exist will create the file
+  */
+  fs.readFile(`./public/${url}`, (err, files) => {
       if (url === '/') {
 
         checkForwardSlash();
@@ -132,16 +123,17 @@ const server = http.createServer((req, res) => {
 
 
 
-
-
-
-
-
-
-
 server.listen(PORT, () => {
   console.log('opened server on', server.address());
 });
+
+
+
+
+
+
+
+
 
 
 
