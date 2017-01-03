@@ -49,7 +49,6 @@ const writeNewFile = () => {
   </body>
   </html>`
 
-
     fs.writeFile(`./public/${dataPost.elementName}.html`, fileContents, (err) => {
       if (err) throw err;
       res.writeHead(200, {'Content-Type' : 'application/json'});
@@ -59,10 +58,7 @@ const writeNewFile = () => {
 
   });
 }
-
-
 // ------------------------------------end functions-----------------------------------------
-
 
 const server = http.createServer((req, res) => {
   let url = req.url;
@@ -81,7 +77,7 @@ const server = http.createServer((req, res) => {
        // will write page if not found
       } else if(req.method === 'POST') {
         console.log('this file doesnt exist');
-        writeNewFile()
+        writeNewFile();
 
 
         // will read file if exists
@@ -118,14 +114,19 @@ const server = http.createServer((req, res) => {
 
     });
 
-
 });
+
+
 
 
 
 server.listen(PORT, () => {
   console.log('opened server on', server.address());
 });
+
+
+
+
 
 
 
