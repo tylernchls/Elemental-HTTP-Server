@@ -5,12 +5,7 @@ const PORT = 3000;
 
 
 
-const server = http.createServer((req, res) => {
-
-  let url = req.url;
-  let findFileType = url.split('').splice(-3,3).join('');
-
-
+// -------------------------------------function area------------------------------------------
   // finds fileType ending and sets it
   const checkFileType = () => {
     if(findFileType === 'css') {
@@ -69,6 +64,16 @@ const server = http.createServer((req, res) => {
 
         });
   }
+
+// ------------------------------------end functions-----------------------------------------
+
+
+const server = http.createServer((req, res) => {
+
+  let url = req.url;
+  let findFileType = url.split('').splice(-3,3).join('');
+
+
 
 
     /*
